@@ -8,4 +8,5 @@ fun main() {
     G.printAdjacencyMatrix();
     println();
     G.printNodeAdjacencyList(0);
+    G.addEdge(0, 1);
 }

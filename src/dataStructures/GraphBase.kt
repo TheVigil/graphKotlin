@@ -1,31 +1,39 @@
 package dataStructures
 
-class GraphBase (numVerticies: Int) {
+open class GraphBase (numbVertices: Int) {
 
     val adjacencyMatrix = mutableListOf<MutableList<Boolean>>();
 
     init {
-        for(i in 0..<numVerticies){
+        for(i in 0..<numbVertices){
             // initial population of the adjMatr with false, because we do not know if there are edges at the given
             // positions
             val x = i;
-            adjacencyMatrix.add(i, MutableList<Boolean>(numVerticies){false});
+            adjacencyMatrix.add(i, MutableList<Boolean>(numbVertices){false});
         }
     }
-    // TODO: account for multigraphs, digraphs, and undirected graphs. The relationship here only holds for an
-    //  undirected graph (abstract method by graph type)
-    fun addEdge(x: Int, y: Int){
+
+    open fun addEdge(x: Int, y: Int){
         // add an edge for a given vertex pair (V0, V1)
-        this.adjacencyMatrix[x][y] = true;
-        this.adjacencyMatrix[y][x] = true;
+        if(this.adjacencyMatrix[x][y] || this.adjacencyMatrix[y][x]){
+            println("ERR: a simple graph can only contain one edge between any verticies (x, y). " +
+                    "Use a multigraph instead!")
+
+        }
+        else{
+            this.adjacencyMatrix[x][y] = true;
+            this.adjacencyMatrix[y][x] = true;
+        }
+
     }
 
-    fun removeEdge(x: Int, y: Int){
+    open fun removeEdge(x: Int, y: Int){
         // remove the edge between a give vertex pair (V0, V1)
         this.adjacencyMatrix[x][y] = false;
+        this.adjacencyMatrix[y][x] = false;
     }
 
-    fun printAdjacencyMatrix()
+    open fun printAdjacencyMatrix()
     {
         for (verticesList in adjacencyMatrix)
         {
@@ -46,7 +54,7 @@ class GraphBase (numVerticies: Int) {
         }
     }
 
-    fun printNodeAdjacencyList(node: Int){
+    open fun printNodeAdjacencyList(node: Int){
         // print the adjacency list for the node given by its index
         val sb: StringBuilder = StringBuilder();
         sb.append("$node: [");
