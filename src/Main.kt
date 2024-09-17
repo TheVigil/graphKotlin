@@ -2,8 +2,6 @@ import dataStructures.GraphBase
 import dataStructures.MultiGraph
 
 fun main() {
-    println("Hello World!");
-
     val G: GraphBase = GraphBase(2);
     G.addEdge(0, 1);
     G.printAdjacencyMatrix();

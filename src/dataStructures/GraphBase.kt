@@ -16,18 +16,32 @@ open class GraphBase (numVertices: Int) {
     // TODO: account for updating idx -> bool relations to make sure edge definitions remain intact, this currently does not work!
     open fun addVertex(idx: Int = this._adjacencyMatrix.lastIndex + 1){
        // adds a vertex to the graph
-        this._adjacencyMatrix.add(idx, MutableList<Boolean>(_numbVertices){false})
+        this._adjacencyMatrix.add(idx, MutableList<Boolean>(_adjacencyMatrix.size){false});
+        for (vertexList in this._adjacencyMatrix){
+            try {
+                vertexList.add(idx, false);
+            }catch (e: IndexOutOfBoundsException){
+                vertexList.add(false);
+            }
+        }
+        println("Edge added at index $idx. Any existing nodes have been shifted rightward in the array!");
     }
     open fun addEdge(x: Int, y: Int){
         // add an edge for a given vertex pair (V0, V1)
-        if(this._adjacencyMatrix[x][y] || this._adjacencyMatrix[y][x]){
-            println("ERR: a simple graph can only contain one edge between any verticies (x, y). " +
+        if(this._adjacencyMatrix[x].getOrNull(y) == true || this._adjacencyMatrix[y].getOrNull(x) == true){
+            println("ERR: a simple graph can only contain one edge between any vertices (x, y). " +
                     "Use a multigraph instead!")
-
         }
         else{
-            this._adjacencyMatrix[x][y] = true;
-            this._adjacencyMatrix[y][x] = true;
+            try {
+                this._adjacencyMatrix[x].add(y, true);
+                this._adjacencyMatrix[y].add(x, true);
+            }catch (e: IndexOutOfBoundsException)
+            {
+                this._adjacencyMatrix[x].add(true);
+                this._adjacencyMatrix[y].add(true);
+            }
+            println("Edge added between vertex: $x and vertex: $y")
         }
 
     }
@@ -40,22 +54,20 @@ open class GraphBase (numVertices: Int) {
 
     open fun printAdjacencyMatrix()
     {
-        for (verticesList in _adjacencyMatrix)
+        for ((x, verticesList) in _adjacencyMatrix.withIndex())
         {
-            val x = this._adjacencyMatrix.indexOf(verticesList);
-            var y : Int;
             val sb: StringBuilder = StringBuilder();
             sb.append("$x: [")
-            for (adjacency in verticesList)
+            for ((y, adjacency) in verticesList.withIndex())
             {
-                y = verticesList.indexOf(adjacency);
-                sb.append(y.toString() +": " + this._adjacencyMatrix[x][y].toString() + ", ");
+                sb.append("$y: ${this._adjacencyMatrix[x][y]}, ");
 
             }
             // cleanup trailing comma and whitespace
             sb.deleteRange(sb.lastIndex - 1, sb.lastIndex +1);
             sb.append("]");
             println(sb);
+            sb.clear();
         }
     }
 
